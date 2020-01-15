@@ -44,4 +44,4 @@ A persistencia debe de facerse do seguinte xeito:
 
 Para realizar a carga de datos das provincias débese de utilizar a liberías **GSON**.
 
-En canto a lectura dos titulares de “El País” a aplicación tera que ler un RSS. Estes están en formato XML. Tan só se deberán mostrar por pantalla os titulares. Para iso utiliza **SAX** para parsear o documento XML. O arquivo XML telo debaixo da tarefa. Como ampliación e optativo sería interesante en lugar de ler o arquivo descargado, poder ler o arquivo online. Así sempre teriamos os titulares actualizados. O enlace dese XML é o seguinte: ***RSS de El País***.
+En canto a lectura dos titulares de “El País” a aplicación tera que ler un RSS. Estes están en formato XML. Tan só se deberán mostrar por pantalla os titulares. Para iso utiliza **SAX** para parsear o documento XML. O arquivo XML telo debaixo da tarefa. Como ampliación e optativo sería interesante en lugar de ler o arquivo descargado, poder ler o arquivo online. Así sempre teriamos os titulares actualizados. O enlace dese XML é o seguinte: ***RSS de El País***[Contribution guidelines for this project](http://ep00.epimg.net/rss/elpais/portada.xml).
