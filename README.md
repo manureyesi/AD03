@@ -7,7 +7,7 @@ Nesta tarefa vamos poñer en práctica o visto nesta unidade intentando facer un
 A situación é a seguinte: necesitamos un programa para xestionar as tendas dunha franquicia de venta de equipos informáticos.
 Necesitamos gardar a seguinte información:
 
-* Temos que gardar as **provincias** de España. Esta telas no arquivo provincias.json. Deberase gardar o id e o nome da provincia.
+* Temos que gardar as **provincias** de España. Esta telas no arquivo [provincias.json](provincias.json). Deberase gardar o id e o nome da provincia.
 * As **tendas** co seu nome, a provincia e a súa cidade.
 * Os **productos** co seu ***nome***, ***descripción*** e ***prezo***.
 * Cada tenda terá unha selección de productos. Para cada tenda temos que gardar o ***stock*** que ten dese productos.
@@ -44,4 +44,4 @@ A persistencia debe de facerse do seguinte xeito:
 
 Para realizar a carga de datos das provincias débese de utilizar a liberías **GSON**.
 
-En canto a lectura dos titulares de “El País” a aplicación tera que ler un RSS. Estes están en formato XML. Tan só se deberán mostrar por pantalla os titulares. Para iso utiliza **SAX** para parsear o documento XML. O arquivo XML telo debaixo da tarefa. Como ampliación e optativo sería interesante en lugar de ler o arquivo descargado, poder ler o arquivo online. Así sempre teriamos os titulares actualizados. O enlace dese XML é o seguinte: ***RSS de El País***[Contribution guidelines for this project](http://ep00.epimg.net/rss/elpais/portada.xml).
+En canto a lectura dos titulares de “El País” a aplicación tera que ler un RSS. Estes están en formato XML. Tan só se deberán mostrar por pantalla os titulares. Para iso utiliza **SAX** para parsear o documento XML. O arquivo XML telo debaixo da tarefa. Como ampliación e optativo sería interesante en lugar de ler o arquivo descargado, poder ler o arquivo online. Así sempre teriamos os titulares actualizados. O enlace dese XML é o seguinte: [***RSS de El País***](http://ep00.epimg.net/rss/elpais/portada.xml).
