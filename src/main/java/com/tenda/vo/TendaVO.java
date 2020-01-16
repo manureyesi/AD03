@@ -15,6 +15,7 @@ import java.util.List;
 public class TendaVO {
     
     private String nome;
+    private ProvinciaVO provincia;
     private String cidade;
     
     List<ProductoVO> listaProductos;
@@ -23,6 +24,14 @@ public class TendaVO {
     public TendaVO(String nome, String cidade) {
         this.nome = nome;
         this.cidade = cidade;
+        listaEmpregados = new ArrayList<>();
+        listaProductos = new ArrayList<>();
+    }
+    
+    public TendaVO(String nome, String cidade, ProvinciaVO provincia) {
+        this.nome = nome;
+        this.cidade = cidade;
+        this.provincia = provincia;
         listaEmpregados = new ArrayList<>();
         listaProductos = new ArrayList<>();
     }
@@ -48,6 +57,14 @@ public class TendaVO {
 
     public void setCidade(String cidade) {
         this.cidade = cidade;
+    }
+
+    public ProvinciaVO getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(ProvinciaVO provincia) {
+        this.provincia = provincia;
     }
 
     public List<ProductoVO> getListaProductos() {

@@ -6,6 +6,8 @@
 package com.tenda.main;
 
 import com.rss.elPais.LeerRSSElPais;
+import com.tenda.sqlLite.DBUtiles;
+import com.tenda.sqlLite.TendasRepositorio;
 import com.tenda.utiles.DatosMenuEnum;
 import com.tenda.utiles.MenuUtiles;
 import com.tenda.utiles.UtilesTendaJson;
@@ -14,6 +16,8 @@ import com.tenda.vo.EmpregadoVO;
 import com.tenda.vo.ProductoVO;
 import com.tenda.vo.ProgramaVO;
 import com.tenda.vo.TendaVO;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -24,11 +28,18 @@ public class Tenda {
 
     private static final Scanner sc = new Scanner (System.in);
     
+    private static final String NOMBRE_ARCHIVO_SQL_LITE = "tenda.db";
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
        
+        Connection connection = null;
+        
+        //Cargar Conexion DB
+        connection = DBUtiles.conectarseDB(NOMBRE_ARCHIVO_SQL_LITE);
+        
         ProgramaVO datosPrograma;
         
         //Variables Programa
@@ -60,8 +71,14 @@ public class Tenda {
                         System.out.print("Cidade: ");
                         String cidadeTenda = sc.nextLine();
                         
-                        datosPrograma.getListaTendas().add(new TendaVO(nomeTenda, cidadeTenda));
-                        UtilesTendaJson.guardarDatosTendaEnArchivo(datosPrograma);
+                        TendaVO tenda = TendasRepositorio.buscarTendaPorNome(connection, nomeTenda);
+                        if (tenda == null) {
+                            //En caso de non existir Tenda crease
+                            TendasRepositorio.insertarDatos(connection, new TendaVO(nomeTenda, cidadeTenda));
+                        } else {
+                            System.err.println("Tenda duplicada, non se creara.");
+                        }
+                        
                         pararProgramaAtaEnter();
                         
                         break;
@@ -334,6 +351,9 @@ public class Tenda {
             } catch (NumberFormatException | NullPointerException e) {
                 System.err.println("O número introducido non é valido.");
                 posicionMenu = 0;
+            } catch (SQLException e) {
+                posicionMenu = 0;
+                System.err.println("Error.");
             }
             
         }
