@@ -29,6 +29,10 @@ public class CrearTablaDB {
         
         TendasRepositorio.crearTabla(con);
         
+        ProductosRepositorio.crearTabla(con);
+        
+        ClientesRepositorio.crearTabla(con);
+        
     }
     
 }

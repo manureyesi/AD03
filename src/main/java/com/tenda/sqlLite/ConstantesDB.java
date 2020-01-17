@@ -13,5 +13,7 @@ public class ConstantesDB {
     
     final static String TABLA_PROVINCIAS = "PROVINCIAS";
     final static String TABLA_TENDAS = "TENDAS";
+    final static String TABLA_PRODUCTOS = "PRODUCTOS";
+    final static String TABLA_CLIENTES = "CLIENTES";
     
 }

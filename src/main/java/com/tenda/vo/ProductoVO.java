@@ -11,20 +11,22 @@ package com.tenda.vo;
  */
 public class ProductoVO {
     
-    private final Long identificador;
+    private final String nome;
     private String descripcion;
     private Double prezo;
-    private Long cantidade;
 
-    public ProductoVO(Long identificador, String descripcion, Double prezo, Long cantidade) {
-        this.identificador = identificador;
-        this.descripcion = descripcion;
-        this.prezo = prezo;
-        this.cantidade = cantidade;
+    public ProductoVO(String nome) {
+        this.nome = nome;
     }
 
-    public Long getIdentificador() {
-        return identificador;
+    public ProductoVO(String nome, String descripcion, Double prezo) {
+        this.nome = nome;
+        this.descripcion = descripcion;
+        this.prezo = prezo;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public String getDescripcion() {
@@ -43,12 +45,4 @@ public class ProductoVO {
         this.prezo = prezo;
     }
 
-    public Long getCantidade() {
-        return cantidade;
-    }
-
-    public void setCantidade(Long cantidade) {
-        this.cantidade = cantidade;
-    }
-    
 }

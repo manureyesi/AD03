@@ -15,6 +15,9 @@ public class ClienteVO {
     private String apelidos;
     private String email;
 
+    public ClienteVO() {
+    }
+
     public ClienteVO(String nome, String apelidos, String email) {
         this.nome = nome;
         this.apelidos = apelidos;

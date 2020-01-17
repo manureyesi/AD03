@@ -6,7 +6,10 @@
 package com.tenda.main;
 
 import com.rss.elPais.LeerRSSElPais;
+import com.tenda.sqlLite.ClientesRepositorio;
 import com.tenda.sqlLite.DBUtiles;
+import com.tenda.sqlLite.ProductosRepositorio;
+import com.tenda.sqlLite.ProvinciasRepositorio;
 import com.tenda.sqlLite.TendasRepositorio;
 import com.tenda.utiles.DatosMenuEnum;
 import com.tenda.utiles.MenuUtiles;
@@ -15,10 +18,12 @@ import com.tenda.vo.ClienteVO;
 import com.tenda.vo.EmpregadoVO;
 import com.tenda.vo.ProductoVO;
 import com.tenda.vo.ProgramaVO;
+import com.tenda.vo.ProvinciaVO;
 import com.tenda.vo.TendaVO;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -30,13 +35,13 @@ public class Tenda {
     
     private static final String NOMBRE_ARCHIVO_SQL_LITE = "tenda.db";
     
+    private static Connection connection = null;
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
        
-        Connection connection = null;
-        
         //Cargar Conexion DB
         connection = DBUtiles.conectarseDB(NOMBRE_ARCHIVO_SQL_LITE);
         
@@ -73,10 +78,48 @@ public class Tenda {
                         
                         TendaVO tenda = TendasRepositorio.buscarTendaPorNome(connection, nomeTenda);
                         if (tenda == null) {
-                            //En caso de non existir Tenda crease
-                            TendasRepositorio.insertarDatos(connection, new TendaVO(nomeTenda, cidadeTenda));
+                            
+                            System.out.print("Provincia: ");
+                            String nomeProvincia = sc.nextLine();
+                            
+                            //Buscar si existe Provincia
+                            ProvinciaVO provincia = 
+                                    ProvinciasRepositorio.buscarProvinciaPorNombre(connection, nomeProvincia);
+                            
+                            if (provincia != null) {
+                                //En caso de non existir Tenda crease
+                                TendasRepositorio.insertarDatos(connection, new TendaVO(nomeTenda, cidadeTenda, provincia));
+                            } else {
+                                System.err.println("Error al buscar Provincia.");
+                            }
+                            
                         } else {
                             System.err.println("Tenda duplicada, non se creara.");
+                        }
+                        
+                        pararProgramaAtaEnter();
+                        
+                        break;
+                    
+                    case VER_TENDAS:
+                        
+                        //Ver Tendas
+                        System.out.println("Lista de Tiendas:");
+                        
+                        for (TendaVO tendaAux : TendasRepositorio.buscarTendas(connection)) {
+                            //Datos tiendas
+                            System.out.print("Nombre: ");
+                            System.out.println(tendaAux.getNome());
+                            
+                            System.out.print("Cidade: ");
+                            System.out.println(tendaAux.getCidade());
+                            
+                            System.out.print("  Codigo Provincia: ");
+                            System.out.println(tendaAux.getProvincia().getId());
+                            
+                            System.out.print("  Nombre Provincia: ");
+                            System.out.println(tendaAux.getProvincia().getNome());
+                            
                         }
                         
                         pararProgramaAtaEnter();
@@ -89,17 +132,16 @@ public class Tenda {
                         System.out.print("Nome Tenda: ");
                         
                         //Buscar Tenda
-                        idTenda = buscarTenda(datosPrograma);
+                        TendaVO datosTenda = buscarTenda();
                         
-                        if (idTenda != null) {
+                        if (datosTenda != null) {
                             if (comprobarBorrado()) {
-                                datosPrograma.getListaTendas().remove(idTenda.intValue());
+                                TendasRepositorio.eliminar(connection, datosTenda.getNome());
                             }
                         } else {
                             System.err.println("A tenda a borrar non existe.");
                         }
                         
-                        UtilesTendaJson.guardarDatosTendaEnArchivo(datosPrograma);
                         pararProgramaAtaEnter();
                         
                         break;
@@ -130,7 +172,6 @@ public class Tenda {
                             System.out.println("Tenda non encontrada.");
                         }
                         
-                        UtilesTendaJson.guardarDatosTendaEnArchivo(datosPrograma);
                         pararProgramaAtaEnter();
                         
                         break;
@@ -167,92 +208,65 @@ public class Tenda {
                             System.out.println("Tenda non encontrada.");
                         }
                         
-                        UtilesTendaJson.guardarDatosTendaEnArchivo(datosPrograma);
                         pararProgramaAtaEnter();
                         
                         break;
                     
-                    case ENGADIR_PRODUCTO_TENDA:
+                    case ENGADIR_PRODUCTO:
                         
-                        System.out.println("Buscar tenda para engadir producto:");
-                        System.out.print("Nome Tenda: ");
+                        System.out.print("Nome Producto: ");
+                        String nomeProducto = sc.nextLine();
+
+                        System.out.print("Descripcion Producto: ");
+                        String decripcionProducto = sc.nextLine();
                         
-                        idTenda = buscarTenda(datosPrograma);
-                        
-                        if (idTenda != null) {
-                            System.out.println("Tenda encontrada, preparandose para introducir producto:");
+                        System.out.print("Prezo Producto: ");
+                        String prezoProducto = sc.nextLine();
+
+                        try{
+
+                            ProductoVO productoEngadir = 
+                                    new ProductoVO(nomeProducto);
+                            productoEngadir.setPrezo(Double.valueOf(prezoProducto.replace(',', '.')));
+                            productoEngadir.setDescripcion(StringUtils.isNotBlank(decripcionProducto) ? decripcionProducto : null);
                             
-                            System.out.print("Codigo Producto: ");
-                            String codProducto = sc.nextLine();
-                            
-                            System.out.print("Nome Producto: ");
-                            String nomeProducto = sc.nextLine();
-                        
-                            System.out.print("Pezo Producto: ");
-                            String prezoProducto = sc.nextLine();
-                            
-                            System.out.print("Stock Producto: ");
-                            String stockProducto = sc.nextLine();
-                            
-                            try{
-                            
-                                datosPrograma.getListaTendas().get(idTenda).getListaProductos().add(
-                                        new ProductoVO(
-                                                Long.valueOf(codProducto),
-                                                nomeProducto,
-                                                Double.valueOf(prezoProducto.replace(',', '.')),
-                                                Long.valueOf(stockProducto)));
-                                
+                            if (buscarProducto(nomeProducto)==null) {
+                                ProductosRepositorio.insertarDatos(connection, productoEngadir);
                                 System.out.println("Producto engadido correctamente.");
-                                
-                            } catch (NumberFormatException e) {
-                                System.err.println("Error ao engadir producto.");
+                            } else{
+                                System.out.println("El producto ya existe.");
                             }
                             
-                        } else {
-                            System.out.println("Tenda non encontrada.");
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error ao engadir producto.");
                         }
-                        
-                        UtilesTendaJson.guardarDatosTendaEnArchivo(datosPrograma);
+                            
                         pararProgramaAtaEnter();
                         
                         break;
                     
-                    case ELIMINAR_PRODUCTO_TENDA:
+                    case ELIMINAR_PRODUCTO:
                         
-                        System.out.println("Buscar tenda para eliminar Empregado:");
-                        System.out.print("Nome Tenda: ");
-                        
-                        idTenda = buscarTenda(datosPrograma);
-                        
-                        if (idTenda != null) {
-                            System.out.println("Tenda encontrada, preparandose para introducir producto:");
-                            
-                            System.out.print("Codigo Producto: ");
-                            String codProducto = sc.nextLine();
-                                                        
-                            try {
-                            
-                                Integer indiceProducto = buscarProducto(datosPrograma, idTenda, Long.valueOf(codProducto));
-                            
-                                if (indiceProducto != null) {
-                                    if (comprobarBorrado()) {
-                                        datosPrograma.getListaTendas().get(idTenda).getListaProductos().remove(indiceProducto.intValue());
-                                    }
-                                    
-                                } else {
-                                    System.out.println("Producto non encontrado.");
+                        System.out.print("Nombre Producto: ");
+                        String nombreProducto = sc.nextLine();
+
+                        try {
+
+                            ProductoVO productoAux = buscarProducto(nombreProducto);
+
+                            if (productoAux != null) {
+                                if (comprobarBorrado()) {
+                                   ProductosRepositorio.eliminar(connection, productoAux.getNome());
                                 }
-                                
-                            } catch (NumberFormatException e) {
-                                System.err.println("Error ao buscar producto a borrar.");
+
+                            } else {
+                                System.out.println("Producto non encontrado.");
                             }
-                            
-                        } else {
-                            System.out.println("Tenda non encontrada.");
+
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error ao buscar producto a borrar.");
                         }
-                        
-                        UtilesTendaJson.guardarDatosTendaEnArchivo(datosPrograma);
+                            
                         pararProgramaAtaEnter();
                         
                         break;
@@ -270,6 +284,19 @@ public class Tenda {
 
                         System.out.print("Email Cliente: ");
                         String emailCliente = sc.nextLine();
+                        
+                        ClienteVO cliente = new ClienteVO(
+                                nomeCliente, 
+                                apelidoCliente, 
+                                emailCliente);
+                        
+                        if (ClientesRepositorio.buscarPorNombre(connection, cliente) == null) {
+                            //Añadir cliente
+                            ClientesRepositorio.insertarDatos(connection, cliente);
+                            System.out.println("Cliente añadido con exito.");
+                        } else {
+                            System.out.println("El cliente ya existe.");
+                        }
                         
                         datosPrograma.getListaClientes().add(
                                 new ClienteVO(
@@ -325,20 +352,6 @@ public class Tenda {
                         
                         break;
                     
-                    case CREAR_COPIA_SEGURIDADE:
-                        
-                        System.out.println("Guardando Backup datos Programa:");
-                        System.out.print("Nombre Archivo (Automatico sufixo .backup): ");
-                        
-                        sc.nextLine();
-                        String nomeCopiaSeguridade = sc.nextLine();
-                        
-                        UtilesTendaJson.gardarBackUpArchivo(datosPrograma, nomeCopiaSeguridade);
-                        
-                        pararProgramaAtaEnter();
-                        
-                        break;
-                        
                     case SAIR:
                         System.err.println("Saindo do programa.");
                         break;
@@ -358,6 +371,16 @@ public class Tenda {
             
         }
                 
+    }
+    
+    private static TendaVO buscarTenda () throws SQLException {
+    
+        sc.nextLine();
+        String nomeTenda = sc.nextLine();
+
+        //Buscar Tenda        
+        return TendasRepositorio.buscarTendaPorNome(connection, nomeTenda);
+        
     }
     
     private static Integer buscarTenda (final ProgramaVO datosPrograma) {
@@ -396,17 +419,10 @@ public class Tenda {
         
     }
     
-    private static Integer buscarProducto(final ProgramaVO datosPrograma, final Integer idTenda, final Long codProducto) {
+    private static ProductoVO buscarProducto(final String nomeProducto) throws SQLException {
         
-        Integer indiceProducto = null;
+        return ProductosRepositorio.buscarPorNombre(connection, nomeProducto);
         
-        for (int i = 0; i < datosPrograma.getListaTendas().get(idTenda).getListaProductos().size() ; i++) {
-            if (datosPrograma.getListaTendas().get(idTenda).getListaProductos().get(i).getIdentificador().equals(codProducto)) {
-                indiceProducto = i;
-                break;
-            }
-        }
-        return indiceProducto;
     }
     
     private static Boolean comprobarBorrado () {

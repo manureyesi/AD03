@@ -1,5 +1,6 @@
 package com.tenda.sqlLite;
 
+import com.tenda.vo.ClienteVO;
 import com.tenda.vo.ProvinciaVO;
 import com.tenda.vo.TendaVO;
 import java.sql.Connection;
@@ -7,10 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
- * ProvinciasRepositorio
+ * TendasRepositorio
  */
 public class TendasRepositorio {
     
@@ -64,8 +67,7 @@ public class TendasRepositorio {
         insertSql.append("INSERT INTO ");
         insertSql.append(ConstantesDB.TABLA_TENDAS);
         insertSql.append(" ( ");
-        insertSql.append("NOME, CIDADE");
-        insertSql.append(tenda.getProvincia() != null ? "ID_PROVINCIA" : "");
+        insertSql.append("NOME, CIDADE, ID_PROVINCIA");
         insertSql.append(" ) ");
         insertSql.append("VALUES(?, ?");
         insertSql.append(tenda.getProvincia() != null ? ",?" : "");
@@ -76,9 +78,7 @@ public class TendasRepositorio {
         //Aquí e cando engadimos o valor do nome
         pstmt.setString(1, tenda.getNome());
         pstmt.setString(2, tenda.getCidade());
-        if (tenda.getProvincia() != null) {
-            pstmt.setInt(3, tenda.getProvincia().getId());
-        }
+        pstmt.setInt(3, tenda.getProvincia().getId());
         pstmt.executeUpdate();
         
     }
@@ -107,6 +107,46 @@ public class TendasRepositorio {
         }
         
         return tenda;
+    }
+    
+    /*
+    Método para buscar en la tabla por id
+    */
+    public static List<TendaVO> buscarTendas (final Connection con) throws SQLException {
+    
+        StringBuilder selectSql = new StringBuilder();
+        selectSql.append("SELECT * FROM ");
+        selectSql.append(ConstantesDB.TABLA_TENDAS);
+        selectSql.append(" where 1 = 1;");
+        
+        Statement statement = con.createStatement();
+        
+        ResultSet rs = statement.executeQuery(selectSql.toString());
+        
+        List<TendaVO> listaTendas = new ArrayList<>();
+        
+        while(rs.next()){
+            //Crear Objeto
+            listaTendas.add(crearObjeto(rs, con));
+        }
+        
+        return listaTendas;
+    }
+    
+    /*
+    Método para eliminar en la tabla por nombre
+    */
+    public static void eliminar (final Connection con, final String nomeTenda) throws SQLException {
+    
+        StringBuilder selectSql = new StringBuilder();
+        selectSql.append("DELETE * FROM ");
+        selectSql.append(ConstantesDB.TABLA_TENDAS);
+        selectSql.append(" where NOME = '");
+        selectSql.append(nomeTenda);
+        selectSql.append("';");
+        
+        con.createStatement();
+        
     }
     
 }

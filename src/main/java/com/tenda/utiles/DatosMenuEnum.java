@@ -12,16 +12,19 @@ package com.tenda.utiles;
 public enum DatosMenuEnum {
     
     ENGADIR_TENDA(1, "Engadir Tenda"),
-    ELIMINAR_TENDA(2, "Eliminar Tenda"),
-    ENGADIR_PRODUCTO_TENDA(3, "Engadir producto a unha tenda"),
-    ELIMINAR_PRODUCTO_TENDA(4, "Eliminar producto a unha tenda"),
-    ENGADIR_EMPREADO_TENDA(5, "Engadir empregado a tenda"),
-    ELIMINAR_EMPREADO_TENDA(6, "Eliminar empregado a tenda"),
-    ENGADIR_CLIENTE(7, "Engadir cliente"),
-    ELIMINAR_CLIENTE(8, "Eliminar cliente"),
-    CREAR_COPIA_SEGURIDADE(9, "Crear copia de seguridade"),
-    LER_TITULARES_PERIODICO(10, "Ler titulares do periódico"),
-    SAIR(11, "Sair");
+    VER_TENDAS(2, "Engadir Tenda"),
+    ELIMINAR_TENDA(3, "Eliminar Tenda"),
+    ENGADIR_PRODUCTO(4, "Engadir producto"),
+    
+    ELIMINAR_PRODUCTO(11, "Eliminar producto"),
+    
+    
+    ENGADIR_EMPREADO_TENDA(6, "Engadir empregado a tenda"),
+    ELIMINAR_EMPREADO_TENDA(7, "Eliminar empregado a tenda"),
+    ENGADIR_CLIENTE(8, "Engadir cliente"),
+    ELIMINAR_CLIENTE(9, "Eliminar cliente"),
+    LER_TITULARES_PERIODICO(15, "Ler titulares do periódico"),
+    SAIR(16, "Sair");
     
     private final Integer idMenu;
     private final String descripcion;

@@ -34,7 +34,7 @@ public class ProvinciasRepositorio {
         createSql.append("CREATE TABLE IF NOT EXISTS ");
         createSql.append(ConstantesDB.TABLA_PROVINCIAS);
         createSql.append(" (ID integer PRIMARY KEY, ");
-        createSql.append("NOME text NOT NULL);");
+        createSql.append("NOME VARCHAR(30) NOT NULL);");
         
         Statement stmt = con.createStatement();
         stmt.execute(createSql.toString());
@@ -71,9 +71,35 @@ public class ProvinciasRepositorio {
         StringBuilder selectSql = new StringBuilder();
         selectSql.append("SELECT * FROM ");
         selectSql.append(ConstantesDB.TABLA_PROVINCIAS);
-        selectSql.append(" where id = ");
+        selectSql.append(" where ID = ");
         selectSql.append(idProvincia);
         selectSql.append(";");
+        
+        Statement statement = con.createStatement();
+        
+        ResultSet rs = statement.executeQuery(selectSql.toString());
+        
+        ProvinciaVO provincia = null;
+        
+        while(rs.next()){
+            //Crear Objeto
+            provincia = crearObjeto(rs);
+        }
+        
+        return provincia;
+    }
+    
+    /*
+    Método para buscar en la tabla por nombre
+    */
+    public static ProvinciaVO buscarProvinciaPorNombre (final Connection con, final String nombreProvincia) throws SQLException {
+    
+        StringBuilder selectSql = new StringBuilder();
+        selectSql.append("SELECT * FROM ");
+        selectSql.append(ConstantesDB.TABLA_PROVINCIAS);
+        selectSql.append(" where NOME = '");
+        selectSql.append(nombreProvincia);
+        selectSql.append("';");
         
         Statement statement = con.createStatement();
         
