@@ -31,6 +31,8 @@ public class CrearTablaDB {
         
         ProductosRepositorio.crearTabla(con);
         
+        StockRepositorio.crearTabla(con);
+        
         ClientesRepositorio.crearTabla(con);
         
     }

@@ -138,6 +138,8 @@ public class TendasRepositorio {
     */
     public static void eliminar (final Connection con, final String nomeTenda) throws SQLException {
     
+        StockRepositorio.eliminar(con, nomeTenda, null);
+        
         StringBuilder selectSql = new StringBuilder();
         selectSql.append("DELETE * FROM ");
         selectSql.append(ConstantesDB.TABLA_TENDAS);

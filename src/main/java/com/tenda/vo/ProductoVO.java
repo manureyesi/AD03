@@ -25,6 +25,12 @@ public class ProductoVO {
         this.prezo = prezo;
     }
 
+    public ProductoVO(final ProductoVO producto) {
+        this.nome = producto.getNome();
+        this.descripcion = producto.getDescripcion();
+        this.prezo = producto.getPrezo();
+    }
+    
     public String getNome() {
         return nome;
     }

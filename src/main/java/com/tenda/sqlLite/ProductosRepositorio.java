@@ -126,7 +126,7 @@ public class ProductosRepositorio {
     */
     public static void eliminar (final Connection con, final String nomeProducto) throws SQLException {
     
-        //TODO eliminar referencias Stock
+        StockRepositorio.eliminar(con, null, nomeProducto);
         
         StringBuilder selectSql = new StringBuilder();
         selectSql.append("DELETE * FROM ");
