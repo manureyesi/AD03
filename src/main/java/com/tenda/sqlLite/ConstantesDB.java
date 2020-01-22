@@ -16,5 +16,7 @@ public class ConstantesDB {
     final static String TABLA_PRODUCTOS = "PRODUCTOS";
     final static String TABLA_CLIENTES = "CLIENTES";
     final static String TABLA_STOCK = "STOCK_PRODUCTOS";
+    final static String TABLA_EMPLEADOS = "EMPLEADOS";
+    final static String TABLA_EMPLEADOS_HORAS = "EMPLEADOS_HORAS_TENDA";
     
 }

@@ -24,3 +24,7 @@ hs_err_pid*
 /nbproject/private/
 manifest.mf
 /target/
+.idea
+.scannerwork
+AD03.iml
+nbactions.xml

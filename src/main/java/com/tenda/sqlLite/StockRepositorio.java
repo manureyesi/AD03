@@ -40,12 +40,13 @@ public class StockRepositorio {
         createSql.append("CREATE TABLE IF NOT EXISTS ");
         createSql.append(ConstantesDB.TABLA_STOCK);
         createSql.append("(");
-        createSql.append("ID_TENDA VARCHAR(30) PRIMARY KEY,");
-        createSql.append("ID_PRODUCTO VARCHAR(30) PRIMARY KEY,");
-        createSql.append("STOCK integer NOT NULL,");
+        createSql.append("ID_TENDA VARCHAR(30), ");
+        createSql.append("ID_PRODUCTO VARCHAR(30), ");
+        createSql.append("STOCK integer NOT NULL, ");
         createSql.append("FOREIGN KEY(ID_TENDA) REFERENCES ");
         createSql.append(ConstantesDB.TABLA_TENDAS);
         createSql.append("(NOME), ");
+        createSql.append("PRIMARY KEY(ID_TENDA, ID_PRODUCTO), ");
         createSql.append("FOREIGN KEY(ID_PRODUCTO) REFERENCES ");
         createSql.append(ConstantesDB.TABLA_PRODUCTOS);
         createSql.append("(NOME)");
@@ -109,7 +110,7 @@ public class StockRepositorio {
     Método para buscar en la Tabla Por Tienda y Producto
     */
     public static ProductoStockVO buscarProducto (final Connection con, final String nomeTenda, final String nomeProducto) throws SQLException {
-    
+            
         StringBuilder selectSql = new StringBuilder();
         selectSql.append("SELECT * FROM ");
         selectSql.append(ConstantesDB.TABLA_STOCK);
@@ -134,30 +135,53 @@ public class StockRepositorio {
     }
     
     /*
+    Método para modificar en la tabla
+    */
+    public static void modificar (final Connection con, final ProductoStockVO productoStockVO, final String nomeTenda) throws SQLException {
+    
+        StringBuilder updateSql = new StringBuilder();
+        updateSql.append("UPDATE ");
+        updateSql.append(ConstantesDB.TABLA_STOCK);
+        if (productoStockVO.getStock() !=null) {
+            updateSql.append(" SET STOCK = ");
+            updateSql.append(productoStockVO.getStock());
+        }
+        updateSql.append(" WHERE ");
+        updateSql.append("ID_PRODUCTO = '");
+        updateSql.append(productoStockVO.getNome());
+        updateSql.append("' and ID_TENDA = '");
+        updateSql.append(nomeTenda);
+        updateSql.append("'");
+        
+        con.createStatement();
+        
+    }
+    
+    /*
     Método para eliminar en la tabla por tenda
     */
     public static void eliminar (final Connection con, final String nomeTenda, final String nomeProducto) throws SQLException {
     
         Boolean ponerAnd = Boolean.TRUE;
         
-        StringBuilder selectSql = new StringBuilder();
-        selectSql.append("DELETE * FROM ");
-        selectSql.append(ConstantesDB.TABLA_STOCK);
-        selectSql.append(" where");
+        StringBuilder deleteSql = new StringBuilder();
+        deleteSql.append("DELETE FROM ");
+        deleteSql.append(ConstantesDB.TABLA_STOCK);
+        deleteSql.append(" where");
         if (StringUtils.isNotBlank(nomeTenda)) {
-            selectSql.append(" ID_TENDA = '");
-            selectSql.append(nomeTenda);
-            selectSql.append("'");
+            deleteSql.append(" ID_TENDA = '");
+            deleteSql.append(nomeTenda);
+            deleteSql.append("'");
             ponerAnd = Boolean.FALSE;
         }
         if (StringUtils.isNotBlank(nomeProducto)) {
-            selectSql.append(ponerAnd ? " and": "");
-            selectSql.append(" ID_PRODUCTO = '");
-            selectSql.append(nomeTenda);
-            selectSql.append("'");
+            deleteSql.append(ponerAnd ? " and": "");
+            deleteSql.append(" ID_PRODUCTO = '");
+            deleteSql.append(nomeTenda);
+            deleteSql.append("'");
         }
         
-        con.createStatement();
+        con.prepareStatement(deleteSql.toString()).executeUpdate();
         
     }
     

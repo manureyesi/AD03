@@ -35,6 +35,10 @@ public class CrearTablaDB {
         
         ClientesRepositorio.crearTabla(con);
         
+        EmpregadoRepositorio.crearTabla(con);
+        
+        ListaHorasEmpregadoRepositorio.crearTabla(con);
+        
     }
     
 }

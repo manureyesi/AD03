@@ -128,14 +128,14 @@ public class ProductosRepositorio {
     
         StockRepositorio.eliminar(con, null, nomeProducto);
         
-        StringBuilder selectSql = new StringBuilder();
-        selectSql.append("DELETE * FROM ");
-        selectSql.append(ConstantesDB.TABLA_PRODUCTOS);
-        selectSql.append(" where NOME = '");
-        selectSql.append(nomeProducto);
-        selectSql.append("';");
+        StringBuilder deleteSql = new StringBuilder();
+        deleteSql.append("DELETE FROM ");
+        deleteSql.append(ConstantesDB.TABLA_PRODUCTOS);
+        deleteSql.append(" where NOME = '");
+        deleteSql.append(nomeProducto);
+        deleteSql.append("';");
         
-        con.createStatement();
+        con.prepareStatement(deleteSql.toString()).executeUpdate();
         
     }
     

@@ -1,6 +1,6 @@
 package com.tenda.sqlLite;
 
-import com.tenda.vo.ClienteVO;
+import com.tenda.vo.EmpregadoVO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,20 +11,23 @@ import java.util.List;
 
 /**
  *
- * ClientesRepositorio
+ * EmpregadoRepositorio
  */
-public class ClientesRepositorio {
+public class EmpregadoRepositorio {
         
     /*
     Metodo para crear Objeto
     */
-    private static ClienteVO crearObjeto (final ResultSet rs) throws SQLException {
+    private static EmpregadoVO crearObjeto (final Connection con, final ResultSet rs) throws SQLException {
     
-        ClienteVO cliente = new ClienteVO();
-        cliente.setNome(rs.getString("NOME"));
-        cliente.setApelidos(rs.getString("APELLIDOS"));
-        cliente.setEmail(rs.getString("EMAIL"));
-        return cliente;
+        EmpregadoVO empregado = new EmpregadoVO(
+                rs.getString("NOME"),
+                rs.getString("APELLIDOS"),
+                rs.getString("EMAIL"));
+        
+        empregado.setListaHoras(ListaHorasEmpregadoRepositorio.listarHoras(con, rs.getString("EMAIL")));
+        
+        return empregado;
     }
     
     /*
@@ -34,11 +37,11 @@ public class ClientesRepositorio {
         
         StringBuilder createSql = new StringBuilder();
         createSql.append("CREATE TABLE IF NOT EXISTS ");
-        createSql.append(ConstantesDB.TABLA_CLIENTES);
+        createSql.append(ConstantesDB.TABLA_EMPLEADOS);
         createSql.append(" (NOME VARCHAR(30), ");
         createSql.append("APELLIDOS VARCHAR(100), ");
-        createSql.append("EMAIL VARCHAR(30) NOT NULL, ");
-        createSql.append("PRIMARY KEY(NOME, APELLIDOS)");
+        createSql.append("EMAIL VARCHAR(30), ");
+        createSql.append("PRIMARY KEY(EMAIL)");
         createSql.append(");");
         
         Statement stmt = con.createStatement();
@@ -49,90 +52,88 @@ public class ClientesRepositorio {
     /*
     Método para insertar datos en la tabla
     */
-    public static void insertarDatos (final Connection con, final ClienteVO cliente) throws SQLException {
+    public static void insertarDatos (final Connection con, final EmpregadoVO empregado) throws SQLException {
     
         StringBuilder insertSql = new StringBuilder();
         insertSql.append("INSERT INTO ");
-        insertSql.append(ConstantesDB.TABLA_CLIENTES);
+        insertSql.append(ConstantesDB.TABLA_EMPLEADOS);
         insertSql.append(" (NOME, APELLIDOS, EMAIL) ");
         insertSql.append("VALUES(?, ?, ?);");
         
         PreparedStatement pstmt = con.prepareStatement(insertSql.toString());
 
         //Aquí e cando engadimos o valor do nome
-        pstmt.setString(1, cliente.getNome());
-        pstmt.setString(2, cliente.getApelidos());
-        pstmt.setString(3, cliente.getEmail());
+        pstmt.setString(1, empregado.getNome());
+        pstmt.setString(2, empregado.getApelidos());
+        pstmt.setString(3, empregado.getEmail());
         
         pstmt.executeUpdate();
         
     }
     
     /*
-    Método para buscar en la tabla por nombre
+    Método para buscar en la tabla los productos
     */
-    public static List<ClienteVO> listarClientes (final Connection con) throws SQLException {
+    public static List<EmpregadoVO> listarEmpregado (final Connection con) throws SQLException {
     
         StringBuilder selectSql = new StringBuilder();
         selectSql.append("SELECT * FROM ");
-        selectSql.append(ConstantesDB.TABLA_CLIENTES);
+        selectSql.append(ConstantesDB.TABLA_EMPLEADOS);
         selectSql.append(" where 1 = 1;");
         
         Statement statement = con.createStatement();
         
         ResultSet rs = statement.executeQuery(selectSql.toString());
         
-        List<ClienteVO> listaClientes = new ArrayList<>();
+        List<EmpregadoVO> listaProductos = new ArrayList<>();
         
         while(rs.next()){
             //Crear Objeto
-            listaClientes.add(crearObjeto(rs));
+            listaProductos.add(crearObjeto(con, rs));
         }
         
-        return listaClientes;
+        return listaProductos;
     }
     
     /*
-    Método para buscar en la tabla por nombre
+    Método para buscar en la tabla los productos
     */
-    public static ClienteVO buscarPorNombre (final Connection con, final ClienteVO cliente) throws SQLException {
+    public static EmpregadoVO buscar (final Connection con, final String email) throws SQLException {
     
         StringBuilder selectSql = new StringBuilder();
         selectSql.append("SELECT * FROM ");
-        selectSql.append(ConstantesDB.TABLA_CLIENTES);
-        selectSql.append(" where NOME = '");
-        selectSql.append(cliente.getNome());
-        selectSql.append("' and APELLIDOS = '");
-        selectSql.append(cliente.getApelidos());
+        selectSql.append(ConstantesDB.TABLA_EMPLEADOS);
+        selectSql.append(" where EMAIL = '");
+        selectSql.append(email);
         selectSql.append("';");
         
         Statement statement = con.createStatement();
         
         ResultSet rs = statement.executeQuery(selectSql.toString());
         
-        ClienteVO clienteAux = null;
+        EmpregadoVO empregado = null;
         
         while(rs.next()){
             //Crear Objeto
-            clienteAux = crearObjeto(rs);
+            empregado = crearObjeto(con, rs);
         }
         
-        return clienteAux;
+        return empregado;
     }
     
     /*
     Método para eliminar en la tabla por nombre
     */
-    public static void eliminar (final Connection con, final ClienteVO cliente) throws SQLException {
+    public static void eliminar (final Connection con, final EmpregadoVO empregado) throws SQLException {
     
+        ListaHorasEmpregadoRepositorio.eliminar(con, empregado, null);
+        
         StringBuilder deleteSql = new StringBuilder();
         deleteSql.append("DELETE FROM ");
-        deleteSql.append(ConstantesDB.TABLA_CLIENTES);
+        deleteSql.append(ConstantesDB.TABLA_EMPLEADOS);
         deleteSql.append(" where ");
-        deleteSql.append(" NOME = '");
-        deleteSql.append(cliente.getNome());
-        deleteSql.append("' and APELLIDOS = '");
-        deleteSql.append(cliente.getApelidos());
+        deleteSql.append(" EMAIL = '");
+        deleteSql.append(empregado.getEmail());
         deleteSql.append("';");
         
         con.prepareStatement(deleteSql.toString()).executeUpdate();

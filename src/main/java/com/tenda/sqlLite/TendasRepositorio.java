@@ -1,6 +1,5 @@
 package com.tenda.sqlLite;
 
-import com.tenda.vo.ClienteVO;
 import com.tenda.vo.ProvinciaVO;
 import com.tenda.vo.TendaVO;
 import java.sql.Connection;
@@ -139,15 +138,16 @@ public class TendasRepositorio {
     public static void eliminar (final Connection con, final String nomeTenda) throws SQLException {
     
         StockRepositorio.eliminar(con, nomeTenda, null);
+        ListaHorasEmpregadoRepositorio.eliminar(con, null, new TendaVO(nomeTenda, null));
         
         StringBuilder selectSql = new StringBuilder();
-        selectSql.append("DELETE * FROM ");
+        selectSql.append("DELETE FROM ");
         selectSql.append(ConstantesDB.TABLA_TENDAS);
         selectSql.append(" where NOME = '");
         selectSql.append(nomeTenda);
         selectSql.append("';");
         
-        con.createStatement();
+        con.prepareStatement(selectSql.toString()).executeUpdate();
         
     }
     

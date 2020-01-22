@@ -5,6 +5,8 @@
  */
 package com.tenda.vo;
 
+import java.util.List;
+
 /**
  *
  * EmpregadoVO
@@ -14,7 +16,8 @@ public class EmpregadoVO {
     private final String nome;
     private final String apelidos;
     private String email;
-
+    private List<HorasEmpregadoVO> listaHoras;
+    
     public EmpregadoVO(String nome, String apelidos, String email) {
         this.nome = nome;
         this.apelidos = apelidos;
@@ -35,6 +38,14 @@ public class EmpregadoVO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<HorasEmpregadoVO> getListaHoras() {
+        return listaHoras;
+    }
+
+    public void setListaHoras(List<HorasEmpregadoVO> listaHoras) {
+        this.listaHoras = listaHoras;
     }
     
 }
