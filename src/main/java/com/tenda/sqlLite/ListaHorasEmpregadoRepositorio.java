@@ -81,6 +81,34 @@ public class ListaHorasEmpregadoRepositorio {
     }
     
     /*
+    Método para buscar
+    */
+    public static HorasEmpregadoVO horasTenda (final Connection con, final String email, final String nomeTenda) throws SQLException {
+    
+        StringBuilder selectSql = new StringBuilder();
+        selectSql.append("SELECT * FROM ");
+        selectSql.append(ConstantesDB.TABLA_EMPLEADOS_HORAS);
+        selectSql.append(" where EMAIL_EMPREGADO = '");
+        selectSql.append(email);
+        selectSql.append("' and NOME_TENDA = '");
+        selectSql.append(nomeTenda);
+        selectSql.append("';");
+        
+        Statement statement = con.createStatement();
+        
+        ResultSet rs = statement.executeQuery(selectSql.toString());
+        
+        HorasEmpregadoVO horas = null;
+        
+        while(rs.next()){
+            //Crear Objeto
+            horas = crearObjeto(con, rs);
+        }
+        
+        return horas;
+    }
+    
+    /*
     Método para insertar datos en la tabla
     */
     public static void insertarDatos (final Connection con, final EmpregadoVO empleado, final String nomeTenda, final Integer horas) throws SQLException {
@@ -114,10 +142,10 @@ public class ListaHorasEmpregadoRepositorio {
         deleteSql.append(ConstantesDB.TABLA_EMPLEADOS_HORAS);
         deleteSql.append(" where ");
         if (empregado != null) {
-            deleteSql.append(crearAnd?"and":"");
             deleteSql.append(" EMAIL_EMPREGADO = '");
             deleteSql.append(empregado.getEmail());
             deleteSql.append("'");
+            crearAnd = Boolean.TRUE; 
         }
         
         if (tenda != null) {

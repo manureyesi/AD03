@@ -69,6 +69,7 @@ public class Tenda {
             try {
                 
                 posicionMenu = sc.nextInt();
+                sc.nextLine();
                 
                 switch (DatosMenuEnum.buscarPorId(posicionMenu)) {
                     
@@ -78,7 +79,6 @@ public class Tenda {
                         
                         //Engadir tenda                        
                         System.out.print("Nome: ");
-                        sc.nextLine();
                         String nomeTenda = sc.nextLine();
                         
                         System.out.print("Cidade: ");
@@ -230,7 +230,7 @@ public class Tenda {
                         
                         if (tenda != null) {
                             
-                            System.out.println("Buscar producto para engadir stock:");
+                            System.out.print("Buscar producto para engadir stock:");
                             String nomeProducto = sc.nextLine();
                             
                             producto = buscarProducto(nomeProducto);
@@ -523,13 +523,16 @@ public class Tenda {
                             empregado = EmpregadoRepositorio.buscar(connection, emailEmpregado);
                             
                             if (empregado != null) {
-                            
-                                if (comprobarBorrado()) {
-                                    ListaHorasEmpregadoRepositorio.eliminar(connection, empregado, tenda);
-                                    System.out.println("Empregado eliminado.");
+                                if (ListaHorasEmpregadoRepositorio.horasTenda(connection, empregado.getEmail(), tenda.getNome()) != null) {
+                                    if (comprobarBorrado()) {
+                                        ListaHorasEmpregadoRepositorio.eliminar(connection, empregado, tenda);
+                                        System.out.println("Empregado eliminado.");
+                                    } else {
+                                        System.out.println("O empregado non existe");
+                                    }
                                 } else {
-                                    System.out.println("O empregado non existe");
-                                }
+                                    System.out.println("Empregado non ten horas nesta tenda.");     
+                                }                               
                                 
                             } else {
                                 System.out.println("Empregado non encontrado.");                             
@@ -546,7 +549,6 @@ public class Tenda {
                     case ENGADIR_PRODUCTO:
                         
                         System.out.print("Nome Producto: ");
-                        sc.nextLine();
                         String nomeProducto = sc.nextLine();
 
                         System.out.print("Descripcion Producto: ");
@@ -586,7 +588,7 @@ public class Tenda {
                         
                         if (tenda != null) {
                             
-                            System.out.println("Buscar producto para eliminar:");
+                            System.out.print("Buscar producto para eliminar: ");
                             nomeProducto = sc.nextLine();
                             
                             producto = buscarProducto(nomeProducto);
@@ -598,7 +600,7 @@ public class Tenda {
                                 
                                 if (productoStock != null) {
                                     if (comprobarBorrado()) {
-                                        StockRepositorio.eliminar(connection, tenda.getNome(), productoStock.getNome());
+                                        StockRepositorio.eliminar(connection, tenda.getNome(), producto.getNome());
                                     }
                                     
                                 } else {
@@ -648,7 +650,6 @@ public class Tenda {
                         System.out.println("Engair Cliente:");
                         
                         System.out.print("Nome Cliente: ");
-                        sc.nextLine();
                         String nomeCliente = sc.nextLine();
 
                         System.out.print("Apelido Cliente: ");
@@ -693,6 +694,8 @@ public class Tenda {
 
                         }
                         
+                        pararProgramaAtaEnter();
+                        
                         break;
                         
                     case ELIMINAR_CLIENTE:
@@ -700,7 +703,6 @@ public class Tenda {
                         System.out.println("Buscar cliente a eliminar:");
                         
                         System.out.print("Nome Cliente: ");
-                        sc.nextLine();
                         String nomeClienteEliminar = sc.nextLine();
 
                         System.out.print("Apelido Cliente: ");
@@ -728,7 +730,6 @@ public class Tenda {
                         LeerRSSElPais.leerPortadaElPais();
                         
                         pararProgramaAtaEnter();
-                        sc.nextLine();
                         
                         break;
                     
@@ -755,7 +756,6 @@ public class Tenda {
     
     private static TendaVO buscarTenda () throws SQLException {
     
-        sc.nextLine();
         String nomeTenda = sc.nextLine();
 
         //Buscar Tenda        
@@ -783,6 +783,9 @@ public class Tenda {
         
         //Parar Ejecucion ata enter
         System.out.println("Presione Enter para continuar.");
+        
+        
+        
         sc.nextLine();
         
     }

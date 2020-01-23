@@ -162,7 +162,7 @@ public class StockRepositorio {
     */
     public static void eliminar (final Connection con, final String nomeTenda, final String nomeProducto) throws SQLException {
     
-        Boolean ponerAnd = Boolean.TRUE;
+        Boolean ponerAnd = Boolean.FALSE;
         
         StringBuilder deleteSql = new StringBuilder();
         deleteSql.append("DELETE FROM ");
@@ -172,12 +172,12 @@ public class StockRepositorio {
             deleteSql.append(" ID_TENDA = '");
             deleteSql.append(nomeTenda);
             deleteSql.append("'");
-            ponerAnd = Boolean.FALSE;
+            ponerAnd = Boolean.TRUE;
         }
         if (StringUtils.isNotBlank(nomeProducto)) {
             deleteSql.append(ponerAnd ? " and": "");
             deleteSql.append(" ID_PRODUCTO = '");
-            deleteSql.append(nomeTenda);
+            deleteSql.append(nomeProducto);
             deleteSql.append("'");
         }
         
